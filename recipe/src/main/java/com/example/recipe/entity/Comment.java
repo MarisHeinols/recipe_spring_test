@@ -1,5 +1,7 @@
 package com.example.recipe.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,10 +9,12 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
+    @ManyToOne()
     @JoinColumn(name ="recipe_id")
     private Recipe recipe;
     private String commentText;
@@ -43,5 +47,21 @@ public class Comment {
 
     public String getCommentText() {
         return commentText;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
     }
 }

@@ -1,5 +1,8 @@
 package com.example.recipe.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -12,9 +15,11 @@ public class Recipe implements Serializable {
     private Long id;
     private String name;
     private String recipeText;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="user_id")
+    @JsonBackReference
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
     private User user;
+    @JsonManagedReference
     @OneToMany(mappedBy = "recipe")
     private List<Comment> comments;
 
@@ -52,5 +57,25 @@ public class Recipe implements Serializable {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRecipeText(String recipeText) {
+        this.recipeText = recipeText;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
