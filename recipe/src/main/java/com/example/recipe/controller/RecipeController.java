@@ -33,6 +33,7 @@ public class RecipeController {
     public void deleteRecipe(@PathVariable("id")Long id){
          recipeServices.deleteRecipe(id);
     }
+
     @PutMapping(path = "{id}")
     public Recipe updateRecipe(@PathVariable("id")Long id,String name, String text){
         return recipeServices.updateRecipe(id,name,text);

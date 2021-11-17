@@ -34,7 +34,6 @@ public class RecipeServices {
     }
 
     public List<Recipe> getAllRecipesByUserId(Long id) {
-
         return recipesRepository.findByUserId(id);
     }
 
