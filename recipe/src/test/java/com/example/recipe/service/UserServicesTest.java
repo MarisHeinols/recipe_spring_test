@@ -1,7 +1,6 @@
 package com.example.recipe.service;
 
 
-import com.example.recipe.entity.Comment;
 import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;

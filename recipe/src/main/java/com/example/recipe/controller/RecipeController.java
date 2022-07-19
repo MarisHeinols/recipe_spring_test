@@ -3,7 +3,6 @@ package com.example.recipe.controller;
 import com.example.recipe.entity.Recipe;
 import com.example.recipe.service.RecipeServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +26,11 @@ public class RecipeController {
     public List<Recipe> getAllRecipesByUserId(@PathVariable("id")Long id){
 
         return recipeServices.getAllRecipesByUserId(id);
+    }
+    @GetMapping(path = "")
+    public List<Recipe> getAllRecipes(){
+
+        return recipeServices.getAllRecipes();
     }
 
     @DeleteMapping(path= "{id}")

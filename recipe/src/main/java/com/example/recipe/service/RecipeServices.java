@@ -37,6 +37,10 @@ public class RecipeServices {
         return recipesRepository.findByUserId(id);
     }
 
+    public List<Recipe> getAllRecipes() {
+        return recipesRepository.findAll();
+    }
+
     public void deleteRecipe(Long id) {
         boolean recipeExists = recipesRepository.existsById(id);
         if (!recipeExists){

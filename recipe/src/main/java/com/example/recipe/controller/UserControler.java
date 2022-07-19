@@ -3,10 +3,8 @@ package com.example.recipe.controller;
 import com.example.recipe.entity.User;
 import com.example.recipe.service.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PostUpdate;
 import java.util.List;
 
 @RestController

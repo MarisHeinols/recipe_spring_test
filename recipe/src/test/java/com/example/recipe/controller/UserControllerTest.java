@@ -1,14 +1,14 @@
 package com.example.recipe.controller;
 
+import com.example.recipe.entity.Comment;
+import com.example.recipe.entity.Recipe;
 import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.service.UserServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -140,7 +140,7 @@ public class UserControllerTest {
                         .content(asJsonString(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -153,9 +153,14 @@ public class UserControllerTest {
     }
 
     public static User createUser(){
+        List<Recipe> recipes = new ArrayList<>();
+        List<Comment> comments = new ArrayList<>();
         User user = new User();
         user.setId(1L);
         user.setName("Test");
+
+        user.setRecipes(recipes);
+        user.setComments(comments);
         return user;
     }
     public List<User> createUserList(User user){
