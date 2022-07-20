@@ -2,15 +2,23 @@ package com.example.recipe.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name = "name")
     private String name;
     @JsonManagedReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
@@ -18,19 +26,6 @@ public class User {
     @JsonManagedReference
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    public User() {
-    }
-
-    public User(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public User(String name) {
-        this.name=name;
-    }
-
 
     public Long getId() {
         return id;
@@ -63,4 +58,5 @@ public class User {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+    
 }

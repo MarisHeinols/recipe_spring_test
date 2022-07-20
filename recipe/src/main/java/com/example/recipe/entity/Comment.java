@@ -2,9 +2,17 @@ package com.example.recipe.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,21 +25,8 @@ public class Comment {
     @ManyToOne()
     @JoinColumn(name ="recipe_id")
     private Recipe recipe;
+    @Column(name = "commentText")
     private String commentText;
-
-    public Comment() {
-    }
-
-    public Comment(String commentText) {
-        this.commentText = commentText;
-    }
-
-    public Comment(Long id, User user, Recipe recipe, String commentText) {
-        this.id = id;
-        this.user = user;
-        this.recipe = recipe;
-        this.commentText = commentText;
-    }
 
     public Long getId() {
         return id;

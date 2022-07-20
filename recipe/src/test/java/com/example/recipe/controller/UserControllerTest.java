@@ -5,7 +5,7 @@ import com.example.recipe.entity.Recipe;
 import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
-import com.example.recipe.service.UserServices;
+import com.example.recipe.service.implementation.UserServicesImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +34,7 @@ public class UserControllerTest {
     @Autowired
     private UserControler controller;
     @MockBean
-    private UserServices services;
+    private UserServicesImpl services;
     @MockBean
     private RecipesRepository recipesRepository;
     @MockBean

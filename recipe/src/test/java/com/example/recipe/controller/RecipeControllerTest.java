@@ -5,7 +5,7 @@ import com.example.recipe.entity.Recipe;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
-import com.example.recipe.service.RecipeServices;
+import com.example.recipe.service.implementation.RecipeServicesImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class RecipeControllerTest {
     @Autowired
     private RecipeController controller;
     @MockBean
-    private RecipeServices services;
+    private RecipeServicesImpl services;
     @MockBean
     private RecipesRepository recipesRepository;
     @MockBean
@@ -47,7 +47,7 @@ public class RecipeControllerTest {
     public void getRecipeByUserIdTest() throws Exception{
         Recipe recipe = createRecipe();
 
-        when(services.getRecipe(anyLong())).thenReturn(recipe);
+        when(services.getRecipeById(anyLong())).thenReturn(recipe);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/1")

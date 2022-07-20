@@ -1,10 +1,11 @@
 package com.example.recipe.service;
 
 import com.example.recipe.entity.Comment;
-import com.example.recipe.entity.Recipe;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
+import com.example.recipe.service.interfaces.CommentServices;
+
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -79,7 +79,7 @@ public class CommentServicesTest {
     void updateCommentByIdTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
         Assertions.assertThrows(InvalidUseOfMatchersException.class,
-                ()-> services.updateCommentById(anyLong(),anyString()));
+                ()-> services.updateCommentById(anyLong(),comment));
     }
     @Test
     void deleteCommentByIdTest(){

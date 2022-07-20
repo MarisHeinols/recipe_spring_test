@@ -5,6 +5,8 @@ import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
+import com.example.recipe.service.implementation.UserServicesImpl;
+
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +38,7 @@ public class UserServicesTest {
     @Mock
     private CommentRepository commentRepository;
     @InjectMocks
-    private UserServices services;
+    private UserServicesImpl services;
 
     private User user;
     private List<User> users;
@@ -80,7 +82,7 @@ public class UserServicesTest {
     void updateUserTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
         Assertions.assertThrows(InvalidUseOfMatchersException.class,
-                ()-> services.updateUser(anyLong(),anyString()));
+                ()-> services.updateUser(anyLong(),user));
     }
     @Test
     void deleteUserTest(){

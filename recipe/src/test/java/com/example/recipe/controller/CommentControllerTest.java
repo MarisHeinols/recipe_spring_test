@@ -1,11 +1,15 @@
 package com.example.recipe.controller;
 
 import com.example.recipe.entity.Comment;
+import com.example.recipe.entity.Recipe;
+import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
-import com.example.recipe.service.CommentServices;
+import com.example.recipe.service.interfaces.CommentServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CommentControllerTest {
 
     public static String URL = "/comment";
+
+    Comment comment;
+
+    @BeforeEach
+    void initUseCase() {
+        comment = createComment();
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -106,14 +117,13 @@ public class CommentControllerTest {
     }
     @Test
     public void updateUserTest() throws Exception{
-        Comment comment = createComment();
-
+        
         mockMvc.perform(MockMvcRequestBuilders
-                        .put(URL + "/1?commentText=test")
-                        .content(asJsonString(comment))
+                        .put(URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(comment))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().isCreated());
 
     }
     @Test
@@ -121,7 +131,7 @@ public class CommentControllerTest {
         Comment comment = createComment();
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put(URL + "/null?commentText=test")
+                        .put(URL + "/null")
                         .content(asJsonString(comment))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -132,7 +142,7 @@ public class CommentControllerTest {
     public void createRecipeTest() throws Exception{
         Comment comment = createComment();
 
-        when(services.createComment(comment)).thenReturn(comment);
+        when(services.addComment(comment)).thenReturn(comment);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(URL)
@@ -153,8 +163,12 @@ public class CommentControllerTest {
 
     public static Comment createComment(){
         Comment comment = new Comment();
+        Recipe recipe = new Recipe();
+        User user = new User();
         comment.setId(1L);
         comment.setCommentText("Test");
+        comment.setRecipe(recipe);
+        comment.setUser(user);
         return comment;
     }
     public List<Comment> createCommentList(Comment comment){

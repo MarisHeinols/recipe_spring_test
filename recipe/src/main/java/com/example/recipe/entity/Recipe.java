@@ -3,17 +3,26 @@ package com.example.recipe.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "recipes")
 public class Recipe implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "recipeText")
     private String recipeText;
     @JsonBackReference
     @ManyToOne()
@@ -22,22 +31,6 @@ public class Recipe implements Serializable {
     @JsonManagedReference
     @OneToMany(mappedBy = "recipe")
     private List<Comment> comments;
-
-    public Recipe() {
-    }
-
-    public Recipe(String name, String recipeText) {
-        this.name = name;
-        this.recipeText = recipeText;
-    }
-
-    public Recipe(Long id, String name, String recipeText, User user, List<Comment> comments) {
-        this.id = id;
-        this.name = name;
-        this.recipeText = recipeText;
-        this.user = user;
-        this.comments = comments;
-    }
 
     public Long getId() {
         return id;

@@ -4,6 +4,8 @@ import com.example.recipe.entity.Recipe;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
+import com.example.recipe.service.implementation.RecipeServicesImpl;
+
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +36,7 @@ public class RecipeServicesTest {
     @Mock
     private CommentRepository commentRepository;
     @InjectMocks
-    private RecipeServices services;
+    private RecipeServicesImpl services;
 
     private Recipe recipe;
     private List<Recipe> recipes;
@@ -68,7 +70,7 @@ public class RecipeServicesTest {
     void getRecipeTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
         Assertions.assertThrows(EntityNotFoundException.class,
-                ()-> services.getRecipe(anyLong()));
+                ()-> services.getRecipeById(anyLong()));
     }
     @Test
     void updateRecipeTest(){
@@ -78,7 +80,7 @@ public class RecipeServicesTest {
     void updateRecipeTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
         Assertions.assertThrows(InvalidUseOfMatchersException.class,
-                ()-> services.updateRecipe(anyLong(),anyString(),anyString()));
+                ()-> services.updateRecipe(anyLong(),recipe));
     }
     @Test
     void deleteRecipeTest(){
