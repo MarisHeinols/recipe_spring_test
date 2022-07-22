@@ -1,74 +1,43 @@
 package com.example.recipe.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.io.Serializable;
 import java.util.List;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "recipes")
 public class Recipe implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name")
-    private String name;
+    private String recipeName;
+
     @Column(name = "recipeText")
     private String recipeText;
-    @JsonBackReference
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "recipe")
+
+    @OneToMany(targetEntity = Comment.class, mappedBy = "recipe",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getRecipeText() {
-        return recipeText;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRecipeText(String recipeText) {
-        this.recipeText = recipeText;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 }

@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +34,12 @@ public class CommentControllerTest {
 
     public static String URL = "/comment";
 
-    Comment comment;
-
-    @BeforeEach
-    void initUseCase() {
-        comment = createComment();
-    }
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private CommentController controller;
+    @Autowired
+    private ObjectMapper mapper;
     @MockBean
     private CommentServices services;
     @MockBean
@@ -53,9 +49,20 @@ public class CommentControllerTest {
     @MockBean
     private UserRepository userRepository;
 
+    private Comment comment;
+    private List<Comment> comments;
+
+    @BeforeEach
+    public void init(){
+        comment = createComment();
+        comments = createCommentList(comment);
+        System.out.println(comment);
+        System.out.println(comment.toString());
+
+    }
+
     @Test
     public void getCommentByIdTest() throws Exception{
-        Comment comment = createComment();
 
         when(services.getCommentById(anyLong())).thenReturn(comment);
 
@@ -66,9 +73,9 @@ public class CommentControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     public void getCommentByIdTestInvalid() throws Exception{
-        Comment comment = createComment();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/null")
@@ -78,13 +85,13 @@ public class CommentControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void getAllCommentsByUserIdTest() throws Exception{
-        Comment comment = createComment();
-        List<Comment> commentList = createCommentList(comment);
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/byUser/1")
-                        .content(asJsonString(commentList))
+                        .content(asJsonString(comments))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
@@ -92,43 +99,21 @@ public class CommentControllerTest {
     }
 
     @Test
-    public void deleteCommentTest() throws Exception{
-        Comment comment = createComment();
+    public void updateCommentTest() throws Exception{
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete(URL + "/1")
-                        .content(asJsonString(comment))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
+        when(services.updateCommentById(anyLong(),any())).thenReturn(new Comment());
 
-    }
-    @Test
-    public void deleteRecipeTestInvalid() throws Exception{
-        Comment comment = createComment();
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete(URL + "/null")
-                        .content(asJsonString(comment))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError());
-
-    }
-    @Test
-    public void updateUserTest() throws Exception{
-        
         mockMvc.perform(MockMvcRequestBuilders
                         .put(URL + "/1")
-                        .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
-    public void updateUserTestInvalid() throws Exception{
-        Comment comment = createComment();
+    public void updateCommentTestInvalid() throws Exception{
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put(URL + "/null")
@@ -138,18 +123,42 @@ public class CommentControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void createRecipeTest() throws Exception{
-        Comment comment = createComment();
 
-        when(services.addComment(comment)).thenReturn(comment);
+        when(services.addComment(any())).thenReturn(new Comment());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(URL)
+                        .content(this.mapper.writeValueAsString(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void deleteCommentTest() throws Exception{
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete(URL + "/1")
                         .content(asJsonString(comment))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void deleteRecipeTestInvalid() throws Exception{
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete(URL + "/null")
+                        .content(asJsonString(comment))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError());
 
     }
 
@@ -163,16 +172,12 @@ public class CommentControllerTest {
 
     public static Comment createComment(){
         Comment comment = new Comment();
-        Recipe recipe = new Recipe();
-        User user = new User();
-        comment.setId(1L);
-        comment.setCommentText("Test");
-        comment.setRecipe(recipe);
-        comment.setUser(user);
         return comment;
     }
-    public List<Comment> createCommentList(Comment comment){
+
+    public static List<Comment> createCommentList(Comment comment){
         List<Comment> list = new ArrayList<>();
+
         list.add(comment);
         list.add(comment);
         return list;

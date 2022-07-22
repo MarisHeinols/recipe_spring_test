@@ -7,6 +7,8 @@ import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
 import com.example.recipe.service.implementation.RecipeServicesImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +45,17 @@ public class RecipeControllerTest {
     @MockBean
     private UserRepository userRepository;
 
+    private Recipe recipe;
+    private List<Recipe> recipes;
+
+    @BeforeEach
+    public void init(){
+        recipe = createRecipe();
+        recipes = createRecipeList(recipe);
+    }
+
     @Test
     public void getRecipeByUserIdTest() throws Exception{
-        Recipe recipe = createRecipe();
 
         when(services.getRecipeById(anyLong())).thenReturn(recipe);
 
@@ -57,9 +67,9 @@ public class RecipeControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
     }
+    
     @Test
     public void getRecipeByUserTestInvalid() throws Exception{
-        Recipe recipe = createRecipe();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/null")
@@ -69,13 +79,13 @@ public class RecipeControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void getAllRecipesByUserIdTest() throws Exception{
-        Recipe recipe = createRecipe();
-        List<Recipe> recipeList = createRecipeList(recipe);
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/byUser/1")
-                        .content(asJsonString(recipeList))
+                        .content(asJsonString(recipes))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
@@ -84,7 +94,6 @@ public class RecipeControllerTest {
 
     @Test
     public void deleteRecipeTest() throws Exception{
-        Recipe recipe = createRecipe();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(URL + "/1")
@@ -94,9 +103,9 @@ public class RecipeControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
     public void deleteRecipeTestInvalid() throws Exception{
-        Recipe recipe = createRecipe();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(URL + "/null")
@@ -106,42 +115,44 @@ public class RecipeControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
-    public void updateUserTest() throws Exception{
-        Recipe recipe = createRecipe();
+    public void updateRecipeTest() throws Exception{
+
+        when(services.updateRecipe(anyLong(),any())).thenReturn(new Recipe());
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put(URL + "/1?name=test&text=test")
+                        .put(URL + "/1")
                         .content(asJsonString(recipe))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
-    public void updateUserTestInvalid() throws Exception{
-        Recipe recipe = createRecipe();
+    public void updateRecipeTestInvalid() throws Exception{
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put(URL + "/null?name=test&text=test")
+                        .put(URL + "/null")
                         .content(asJsonString(recipe))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void addRecipeTest() throws Exception{
-        Recipe recipe = createRecipe();
 
-        when(services.addRecipe(recipe)).thenReturn(recipe);
+        when(services.addRecipe(any())).thenReturn(new Recipe());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(URL)
                         .content(asJsonString(recipe))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().is2xxSuccessful());
 
     }
 
@@ -155,13 +166,12 @@ public class RecipeControllerTest {
 
     public static Recipe createRecipe(){
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
-        recipe.setName("Test");
-        recipe.setRecipeText("Test recipe");
         return recipe;
     }
+
     public List<Recipe> createRecipeList(Recipe recipe){
         List<Recipe> list = new ArrayList<>();
+
         list.add(recipe);
         list.add(recipe);
         return list;

@@ -4,6 +4,7 @@ import com.example.recipe.entity.Comment;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
+import com.example.recipe.service.implementation.CommentServicesImpl;
 import com.example.recipe.service.interfaces.CommentServices;
 
 import org.aspectj.lang.annotation.Before;
@@ -35,7 +36,7 @@ public class CommentServicesTest {
     @Mock
     private RecipesRepository recipesRepository;
     @InjectMocks
-    private CommentServices services;
+    private CommentServicesImpl services;
 
     private Comment comment;
     private List<Comment> comments;
@@ -55,46 +56,55 @@ public class CommentServicesTest {
         when(repository.save(comment)).thenReturn(comment);
 
     }
+
     @Test
     void createCommentTestInvalid() throws Exception{
         when(repository.save(null)).thenReturn(null);
 
     }
+
     @Test
     void getCommentByIdTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
 
     }
+
     @Test
     void getCommentByIdTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
         Assertions.assertThrows(EntityNotFoundException.class,
                 ()-> services.getCommentById(anyLong()));
     }
+
     @Test
     void updateCommentByIdTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
     }
+
     @Test
     void updateCommentByIdTestInvalid() throws Exception{
         when(repository.findById(null)).thenReturn(Optional.ofNullable(null));
-        Assertions.assertThrows(InvalidUseOfMatchersException.class,
+        Assertions.assertThrows(javax.persistence.EntityNotFoundException.class,
                 ()-> services.updateCommentById(anyLong(),comment));
     }
+
     @Test
     void deleteCommentByIdTest(){
         when(repository.existsById(anyLong())).thenReturn(true);
     }
+
     @Test
     void deleteCommentByIdTestInvalid(){
         when(repository.existsById(null)).thenReturn(false);
-        Assertions.assertThrows(EntityNotFoundException.class,
+        Assertions.assertThrows(IllegalStateException.class,
                 ()-> services.deleteCommentById(anyLong()));
     }
+
     @Test
     void getAllCommentsByUserIdTest() throws Exception{
         when(repository.findByUserId(anyLong())).thenReturn(comments);
     }
+
     @Test
     void getAllCommentsByRecipeIdTest() throws Exception{
         when(repository.findByRecipeId(anyLong())).thenReturn(comments);
@@ -106,6 +116,7 @@ public class CommentServicesTest {
         comment.setCommentText("Test");
         return comment;
     }
+    
     public List<Comment> createCommentList(Comment comment){
         List<Comment> list = new ArrayList<>();
         list.add(comment);

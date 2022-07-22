@@ -7,6 +7,8 @@ import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.service.implementation.UserServicesImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +42,17 @@ public class UserControllerTest {
     @MockBean
     private CommentRepository commentRepository;
 
+    private User user;
+    private List<User> users;
+
+    @BeforeEach
+    public void init(){
+        user = createUser();
+        users = createUserList(user);
+    }
 
     @Test
     public void getUserTest() throws Exception{
-        User user = createUser();
 
         when(services.getUserById(anyLong())).thenReturn(user);
 
@@ -55,9 +64,9 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
     public void getUserTestInvalid() throws Exception{
-        User user = createUser();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/null")
@@ -68,13 +77,13 @@ public class UserControllerTest {
 
         verify(services, times(0)).getUserById(null);
     }
+
     @Test
     public void getAllUsersTest() throws Exception{
-        User user = createUser();
-        List<User> userList = createUserList(user);
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get(URL + "/all")
-                        .content(asJsonString(userList))
+                        .content(asJsonString(users))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
@@ -83,7 +92,6 @@ public class UserControllerTest {
 
     @Test
     public void deleteUserTest() throws Exception{
-        User user = createUser();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(URL + "/1")
@@ -93,9 +101,9 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
     public void deleteUserTestInvalid() throws Exception{
-        User user = createUser();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(URL + "/null")
@@ -105,21 +113,23 @@ public class UserControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void updateUserTest() throws Exception{
-        User user = createUser();
+
+        when(services.updateUser(anyLong(),any())).thenReturn(new User());
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put(URL + "/1?name=John")
+                        .put(URL + "/1")
                         .content(asJsonString(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
     }
+
     @Test
     public void updateUserTestInvalid() throws Exception{
-        User user = createUser();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put(URL + "/null?name=John")
@@ -129,18 +139,18 @@ public class UserControllerTest {
                 .andExpect(status().is4xxClientError());
 
     }
+
     @Test
     public void addUserTest() throws Exception{
-        User user = createUser();
 
-        when(services.addUser(user)).thenReturn(user);
+        when(services.addUser(any())).thenReturn(new User());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(URL)
                         .content(asJsonString(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
     }
 
@@ -153,18 +163,12 @@ public class UserControllerTest {
     }
 
     public static User createUser(){
-        List<Recipe> recipes = new ArrayList<>();
-        List<Comment> comments = new ArrayList<>();
         User user = new User();
-        user.setId(1L);
-        user.setName("Test");
-
-        user.setRecipes(recipes);
-        user.setComments(comments);
         return user;
     }
     public List<User> createUserList(User user){
         List<User> list = new ArrayList<>();
+        
         list.add(user);
         list.add(user);
         return list;

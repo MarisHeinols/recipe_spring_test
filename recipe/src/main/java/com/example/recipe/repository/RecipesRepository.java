@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface RecipesRepository extends JpaRepository<Recipe,Long> {
 
     List<Recipe> findByUserId(Long userId);
-
     Recipe deleteById(Optional<Recipe> byId);
 }

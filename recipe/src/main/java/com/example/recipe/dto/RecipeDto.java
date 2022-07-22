@@ -3,7 +3,6 @@ package com.example.recipe.dto;
 import java.util.List;
 
 import com.example.recipe.entity.Comment;
-import com.example.recipe.entity.User;
 
 import lombok.Data;
 
@@ -11,8 +10,8 @@ import lombok.Data;
 public class RecipeDto {
 
     private Long id;
-    private String name;
+    private String recipeName;
     private String recipeText;
-    private User user;
+    private Long userId;
     private List<Comment> comments;
 }

@@ -23,45 +23,55 @@ public class RecipeController {
     private RecipeServices recipeServices;
 
     public RecipeController(RecipeServices recipeServices){
+
         super();
         this.recipeServices = recipeServices;
     }
 
     @PostMapping
-    public void addRecipe(@RequestBody Recipe recipe){ 
-        recipeServices.addRecipe(recipe);
+    public ResponseEntity<RecipeDto> addRecipe(@RequestBody RecipeDto recipeDto){ 
+
+        Recipe recipeRequest = modelMapper.map(recipeDto, Recipe.class);
+		Recipe recipe = recipeServices.addRecipe(recipeRequest);
+		RecipeDto postResponse = modelMapper.map(recipe, RecipeDto.class);
+
+		return new ResponseEntity<RecipeDto>(postResponse, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "{id}")
     public ResponseEntity<RecipeDto> getRecipeById(@PathVariable("id")Long id){
+
         Recipe recipe = recipeServices.getRecipeById(id);
         RecipeDto recipeResponse = modelMapper.map(recipe, RecipeDto.class);
         return ResponseEntity.ok().body(recipeResponse);
-
     }
+
     @GetMapping(path = "byUser/{id}")
     public List<RecipeDto> getAllRecipesByUserId(@PathVariable("id")Long id){
+
         return recipeServices.getAllRecipesByUserId(id).stream().map(post -> modelMapper.map(post, RecipeDto.class))
 				.collect(Collectors.toList());
     }
+
     @GetMapping(path = "")
     public List<RecipeDto> getAllRecipes(){
+
         return recipeServices.getAllRecipes().stream().map(post -> modelMapper.map(post, RecipeDto.class))
         .collect(Collectors.toList());
     }
 
     @DeleteMapping(path= "{id}")
     public ResponseEntity<String> deleteRecipe(@PathVariable("id")Long id){
+
         recipeServices.deleteRecipe(id);
 		return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
     }
 
     @PutMapping(path = "{id}")
     public ResponseEntity<RecipeDto> updateRecipe(@PathVariable long id, @RequestBody RecipeDto recipeDto){
+
         Recipe userRequest = modelMapper.map(recipeDto, Recipe.class);
-
 		Recipe recipe = recipeServices.updateRecipe(id, userRequest);
-
 		RecipeDto recipeResponse = modelMapper.map(recipe, RecipeDto.class);
 
 		return ResponseEntity.ok().body(recipeResponse);
