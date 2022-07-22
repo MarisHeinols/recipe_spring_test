@@ -1,8 +1,6 @@
 package com.example.recipe.controller;
 
 import com.example.recipe.entity.Comment;
-import com.example.recipe.entity.Recipe;
-import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
 import com.example.recipe.repository.UserRepository;
@@ -19,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +33,6 @@ public class CommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private CommentController controller;
     @Autowired
     private ObjectMapper mapper;
     @MockBean

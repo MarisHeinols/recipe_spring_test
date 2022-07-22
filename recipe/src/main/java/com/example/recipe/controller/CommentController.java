@@ -50,10 +50,9 @@ public class CommentController {
 
     @PutMapping(path= "{id}")
     public ResponseEntity<CommentDto>  updateCommentById(@PathVariable("id") Long id, @RequestBody CommentDto commentDto ){
-        System.out.println(commentServices);
+        
         Comment commentRequest = modelMapper.map(commentDto, Comment.class);
 		Comment comment = commentServices.updateCommentById(id, commentRequest);
-        System.out.println("comment = "+ comment);
 		CommentDto commentResponse = modelMapper.map(comment, CommentDto.class);
 
 		return ResponseEntity.ok().body(commentResponse);

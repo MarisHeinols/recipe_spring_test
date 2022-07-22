@@ -1,7 +1,5 @@
 package com.example.recipe.controller;
 
-import com.example.recipe.entity.Comment;
-import com.example.recipe.entity.Recipe;
 import com.example.recipe.entity.User;
 import com.example.recipe.repository.CommentRepository;
 import com.example.recipe.repository.RecipesRepository;
@@ -33,8 +31,6 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private UserControler controller;
     @MockBean
     private UserServicesImpl services;
     @MockBean

@@ -34,8 +34,6 @@ public class RecipeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private RecipeController controller;
     @MockBean
     private RecipeServicesImpl services;
     @MockBean
