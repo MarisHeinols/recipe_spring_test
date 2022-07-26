@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -53,18 +55,24 @@ public class RecipeServicesTest {
     @Test
     void addRecipeTest(){
         when(repository.save(recipe)).thenReturn(recipe);
-
+        Recipe testRecipe = services.addRecipe(recipe);
+        assertEquals(recipe, testRecipe);
     }
 
     @Test
     void addRecipeTestInvalid() throws Exception{
-        when(repository.save(null)).thenReturn(null);
+        when(repository.save(null)).thenReturn(Optional.ofNullable(null));
+        Assertions.assertThrows(ClassCastException.class,
+                ()-> services.addRecipe(null));
 
     }
 
     @Test
     void getRecipeTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(recipe));
+        Recipe testRecipe = services.getRecipeById(anyLong());
+        assertEquals(recipe, testRecipe);
+        verify(repository).findById(anyLong());
 
     }
 
@@ -78,6 +86,8 @@ public class RecipeServicesTest {
     @Test
     void updateRecipeTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(recipe));
+        Recipe testRecipe = services.updateRecipe(anyLong(), recipe);
+        assertEquals(recipe, testRecipe);
     }
 
     @Test
@@ -90,6 +100,8 @@ public class RecipeServicesTest {
     @Test
     void deleteRecipeTest(){
         when(repository.existsById(anyLong())).thenReturn(true);
+        services.deleteRecipe(anyLong());
+        verify(repository).deleteById(anyLong());
     }
 
     @Test
@@ -102,6 +114,12 @@ public class RecipeServicesTest {
     @Test
     void getAllRecipesByUserIdTest() throws Exception{
         when(repository.findByUserId(anyLong())).thenReturn(recipes);
+        assertEquals(recipes, services.getAllRecipesByUserId(anyLong()));
+    }
+    @Test
+    void getAllRecipes() throws Exception{
+        when(repository.findAll()).thenReturn(recipes);
+        assertEquals(recipes, services.getAllRecipes());
     }
 
     public static Recipe createRecipe(){

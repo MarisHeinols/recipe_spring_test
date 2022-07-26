@@ -52,8 +52,9 @@ public class CommentServicesImpl implements CommentServices {
         comment.setCommentText(commentData.getCommentText());
         comment.setRecipe(commentData.getRecipe());
         comment.setUser(commentData.getUser());
+        commentRepository.save(comment);
 
-        return commentRepository.save(comment);
+        return comment;
     }
 
     public void deleteCommentById(Long id) {

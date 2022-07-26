@@ -55,8 +55,9 @@ public class RecipeServicesImpl implements RecipeServices {
 		recipe.setRecipeText(recipeData.getRecipeText());
 		recipe.setComments(recipeData.getComments());
         recipe.setUser(recipeData.getUser());
+        recipesRepository.save(recipe);
 
-		return recipesRepository.save(recipe);
+		return recipe;
     }
 
     @Override

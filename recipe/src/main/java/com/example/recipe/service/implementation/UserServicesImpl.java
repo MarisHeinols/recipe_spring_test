@@ -49,8 +49,9 @@ public class UserServicesImpl implements UserServices {
 		user.setUserName(userData.getUserName());
 		user.setRecipes(userData.getRecipes());
 		user.setComments(userData.getComments());
+        userRepository.save(user);
 
-		return userRepository.save(user);
+		return user;
 
     }
 

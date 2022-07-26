@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -52,19 +54,26 @@ public class CommentServicesTest {
     @Test
     void createCommentTest(){
         when(repository.save(comment)).thenReturn(comment);
+        Comment testComment = services.addComment(comment);
+        assertEquals(comment, testComment);
+        
 
     }
 
     @Test
     void createCommentTestInvalid() throws Exception{
-        when(repository.save(null)).thenReturn(null);
+        when(repository.save(null)).thenReturn(Optional.ofNullable(null));
+        Assertions.assertThrows(ClassCastException.class,
+                ()-> services.addComment(null));
 
     }
 
     @Test
     void getCommentByIdTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
-
+        Comment testComment = services.getCommentById(anyLong());
+        assertEquals(comment, testComment);
+        verify(repository).findById(anyLong());
     }
 
     @Test
@@ -77,6 +86,9 @@ public class CommentServicesTest {
     @Test
     void updateCommentByIdTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
+        Comment testComment = services.updateCommentById(anyLong(), comment);
+        assertEquals(comment, testComment);
+
     }
 
     @Test
@@ -89,6 +101,9 @@ public class CommentServicesTest {
     @Test
     void deleteCommentByIdTest(){
         when(repository.existsById(anyLong())).thenReturn(true);
+        services.deleteCommentById(anyLong());
+        verify(repository).deleteById(anyLong());
+        
     }
 
     @Test
@@ -101,11 +116,14 @@ public class CommentServicesTest {
     @Test
     void getAllCommentsByUserIdTest() throws Exception{
         when(repository.findByUserId(anyLong())).thenReturn(comments);
+        assertEquals(comments, services.getAllCommentsByUserId(anyLong()));
     }
 
     @Test
     void getAllCommentsByRecipeIdTest() throws Exception{
         when(repository.findByRecipeId(anyLong())).thenReturn(comments);
+        assertEquals(comments, services.getAllCommentsByRecipeId(anyLong()));
+
     }
 
     public static Comment createComment(){

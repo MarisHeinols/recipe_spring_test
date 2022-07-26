@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -55,18 +56,17 @@ public class UserServicesTest {
     @Test
     void addUserTest(){
         when(repository.save(user)).thenReturn(user);
-
-    }
-
-    @Test
-    void addUserTestInvalid() throws Exception{
-        when(repository.save(null)).thenReturn(null);
+        User testUser = services.addUser(user);
+        assertEquals(user, testUser);
 
     }
 
     @Test
     void getUserByIdTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+        User testUser = services.getUserById(anyLong());
+        assertEquals(user, testUser);
+        verify(repository).findById(anyLong());
 
     }
 
@@ -80,6 +80,8 @@ public class UserServicesTest {
     @Test
     void updateUserTest(){
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+        User testUser = services.updateUser(anyLong(), user);
+        assertEquals(user, testUser);
     }
 
     @Test
@@ -92,6 +94,8 @@ public class UserServicesTest {
     @Test
     void deleteUserTest(){
         when(repository.existsById(anyLong())).thenReturn(true);
+        services.deleteUser(anyLong());
+        verify(repository).deleteById(anyLong());
     }
 
     @Test
@@ -104,6 +108,7 @@ public class UserServicesTest {
     @Test
     void getUsersTest() throws Exception{
         when(repository.findAll()).thenReturn(users);
+        assertEquals(users, services.getAllUsers());
     }
 
     public static User createUser(){
